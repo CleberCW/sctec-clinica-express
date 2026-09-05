@@ -5,11 +5,15 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
-    "start": "node src/main.ts",
+    "start": "node dist/server.ts",
     "dev": "concurrently -k -p \"[{name}]\" -c \"blue.bold,magenta.bold\" \"npm:dev:tsc\" \"npm:dev:tsx\"",
     "dev:tsc": "tsc --watch --noEmit --preserveWatchOutput",
-    "dev:tsx": "tsx watch src/main.ts",
-    "lint": "eslint src"
+    "dev:tsx": "tsx watch src/server.ts",
+    "lint": "eslint src",
+    "typeorm": "tsx ./node_modules/typeorm/cli.js",
+    "migration:generate": "npm run typeorm -- migration:generate sql/migrations/InitialSchema -d src/database.ts",
+    "migration:run": "npm run typeorm -- migration:run -d src/database.ts",
+    "migration:revert": "npm run typeorm -- migration:revert -d src/database.ts"
   },
   "repository": {
     "type": "git",
