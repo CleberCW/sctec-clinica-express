@@ -2,11 +2,13 @@ import 'dotenv/config';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { DataSource } from 'typeorm';
+import { createUserTypeOrmRepository } from './auth/auth.repository.ts';
+import { User } from './entities/user.entity.ts';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-export const myDataSource = new DataSource({
+export const appDataSource = new DataSource({
   type: 'postgres',
   host: 'localhost',
   port: Number(process.env.POSTGRES_PORT),
@@ -20,3 +22,11 @@ export const myDataSource = new DataSource({
   logging: true,
   synchronize: false,
 });
+
+export const getRepositories = () => {
+  return {
+    userRepository: createUserTypeOrmRepository(
+      appDataSource.getRepository(User),
+    ),
+  };
+};

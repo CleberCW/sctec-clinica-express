@@ -11,7 +11,7 @@ import { Permission } from './permissions.entity.ts';
 import { User } from './user.entity.ts';
 
 const ROLE_NAMES = ['admin', 'user', 'owner'] as const;
-type RoleName = (typeof ROLE_NAMES)[number];
+export type RoleName = (typeof ROLE_NAMES)[number];
 
 @Entity()
 export class Role extends BaseEntity {
@@ -29,7 +29,7 @@ export class Role extends BaseEntity {
     type: 'enum',
     enum: ROLE_NAMES,
   })
-  name!: Role;
+  name!: RoleName;
 
   @CreateDateColumn({
     type: 'timestamp',
