@@ -1,6 +1,5 @@
 import type { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
-import { AppError } from './errors/app.error.ts';
 import { UnauthorizedError } from './errors/unauthorized.error.ts';
 
 export function authenticate(
@@ -18,7 +17,7 @@ export function authenticate(
     const secret = process.env.JWT_SECRET;
 
     if (!secret) {
-      throw new AppError('JWT secret não encontrado', 332143);
+      throw new Error('JWT secret não encontrado');
     }
 
     const token = authorization.split(' ')[1];
