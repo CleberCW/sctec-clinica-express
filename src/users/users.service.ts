@@ -1,4 +1,4 @@
-import type { UserRepository } from './auth.repository.ts';
+import type { UserRepository } from './users.repository.ts';
 import { RegisterUserDto } from './dtos/register-user-controller.dto.ts';
 import { compare, genSalt, hash } from 'bcrypt';
 import type { RoleRepository } from './roles.repository.ts';
@@ -6,6 +6,7 @@ import { AppError } from '../@common/errors/app.error.ts';
 import type { LoginDto } from './dtos/login.dto.ts';
 import { InvalidCredentialsError } from '../@common/errors/user-not-found.error.ts';
 import jwt from 'jsonwebtoken';
+import { UnauthorizedError } from '../@common/errors/unauthorized.error.ts';
 
 export const createUserService = (
   userRepository: UserRepository,
@@ -13,22 +14,30 @@ export const createUserService = (
 ) => {
   return {
     registerUser: async (userData: RegisterUserDto) => {
-      const salt = await genSalt(10);
-      const hashPassword = await hash(userData.password, salt);
+      const hashPassword = await hash(userData.password, 10);
 
-      // Por enquanto está dando a role padrão 'user' para todo usuário criado
       const role = await roleRepository.findByName('user');
 
-      // Arrumar isso depois. Deveria jogar um erro? Ou há outra forma melhor
       if (!role) {
-        throw new AppError('Default user role not found', 4904303);
+        throw new Error('Default user role not found');
       }
 
-      return userRepository.save({
-        ...userData,
+      const dbUser = await userRepository.save({
+        firstName: userData.firstName,
+        lastName: userData.lastName,
+        email: userData.email,
         hashedPassword: hashPassword,
         roles: [role],
       });
+
+      return {
+        id: dbUser.id,
+        firstName: dbUser.firstName,
+        lastName: dbUser.lastName,
+        email: dbUser.email,
+        roles: dbUser.roles,
+        createdAt: dbUser.createdAt,
+      };
     },
 
     loginUser: async (loginData: LoginDto) => {
@@ -55,7 +64,7 @@ export const createUserService = (
       const secret = process.env.JWT_SECRET;
 
       if (!secret) {
-        throw new AppError('JWT secret não encontrado', 332143);
+        throw new Error('JWT secret não encontrado');
       }
 
       const token = jwt.sign(payload, secret, {
@@ -63,6 +72,18 @@ export const createUserService = (
       });
 
       return { 'Access Token': token };
+    },
+
+    getUser: async (email: string) => {
+      const user = await userRepository.getUserByEmail(email);
+
+      if (!user) {
+        return null;
+      }
+
+      const { hashedPassword, ...userWithoutPassword } = user;
+
+      return userWithoutPassword;
     },
   };
 };

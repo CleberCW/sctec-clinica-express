@@ -36,6 +36,7 @@ export class Role extends BaseEntity {
   @CreateDateColumn({
     type: 'timestamp',
     default: () => 'CURRENT_TIMESTAMP(6)',
+    select: false,
   })
   createdAt!: Date;
 }

@@ -8,8 +8,6 @@ export const errorHandler = (
   res: Response,
   next: NextFunction,
 ) => {
-  console.error(error);
-
   if (error instanceof ValidationAppError) {
     const errors = Object.fromEntries(
       error.errors.map((validationError) => [
