@@ -6,7 +6,7 @@ import express, {
 } from 'express';
 import { validateBody } from '../@common/validator.middleware.ts';
 import { RegisterUserDto } from './dtos/register-user-controller.dto.ts';
-import type { UserController } from './auth.controller.ts';
+import type { UserController } from './users.controller.ts';
 import { LoginDto } from './dtos/login.dto.ts';
 import { authenticate } from '../@common/authenticator.middleware.ts';
 import { authorize } from '../@common/authorize.middleware.ts';
@@ -30,6 +30,8 @@ export const createUserRouter = (userController: UserController): Router => {
   );
 
   router.post('/login', validateBody(LoginDto), userController.handleLogin);
+
+  router.get('/me', authenticate, userController.getInfo);
 
   return router;
 };

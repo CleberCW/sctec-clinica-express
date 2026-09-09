@@ -2,7 +2,7 @@ import 'dotenv/config';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { DataSource } from 'typeorm';
-import { createUserTypeOrmRepository } from '../auth/auth.repository.ts';
+import { createUserTypeOrmRepository } from '../users/users.repository.ts';
 import { User } from '../entities/user.entity.ts';
 import { Permission } from '../entities/permissions.entity.ts';
 import { Role } from '../entities/role.entity.ts';

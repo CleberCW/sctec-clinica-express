@@ -15,16 +15,16 @@ export class User {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @Column({ type: 'varchar', nullable: false })
+  @Column({ type: 'varchar' })
   firstName!: string;
 
-  @Column({ type: 'varchar', nullable: false })
+  @Column({ type: 'varchar' })
   lastName!: string;
 
   @Column({ type: 'varchar' })
   email!: string;
 
-  @Column({ type: 'varchar' })
+  @Column({ type: 'varchar', select: false })
   hashedPassword!: string;
 
   @ManyToMany(() => Role, (role) => role.users, {
