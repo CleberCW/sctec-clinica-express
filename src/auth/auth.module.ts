@@ -1,4 +1,4 @@
-import { appDataSource } from '../database.ts';
+import { appDataSource } from '../database/initDatabase.ts';
 import { Role } from '../entities/role.entity.ts';
 import { User } from '../entities/user.entity.ts';
 import { createUserController } from './auth.controller.ts';

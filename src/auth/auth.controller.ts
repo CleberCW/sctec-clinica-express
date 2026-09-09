@@ -8,6 +8,12 @@ export const createUserController = (userService: UserService) => {
 
       return res.status(201).json(newUser);
     },
+
+    handleLogin: async (req: Request, res: Response) => {
+      const token = await userService.loginUser(req.body);
+
+      return res.status(200).json(token);
+    },
   };
 };
 

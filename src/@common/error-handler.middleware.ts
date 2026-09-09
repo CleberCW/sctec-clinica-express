@@ -1,6 +1,6 @@
-import type { NextFunction, Request, Response } from 'express';
+import type { Response, Request, NextFunction } from 'express';
+import { AppError } from './errors/app.error.ts';
 import { ValidationAppError } from './errors/validation.error.ts';
-import { EmailAlreadyExistsError } from './errors/email-already-exists.error.ts';
 
 export const errorHandler = (
   error: unknown,
@@ -8,7 +8,7 @@ export const errorHandler = (
   res: Response,
   next: NextFunction,
 ) => {
-  console.log(error);
+  console.error(error);
 
   if (error instanceof ValidationAppError) {
     const errors = Object.fromEntries(
@@ -20,21 +20,18 @@ export const errorHandler = (
       ]),
     );
 
-    res.status(400).json({
+    return res.status(error.statusCode).json({
       message: error.message,
       errors,
     });
-
-    return;
   }
 
-  if (error instanceof EmailAlreadyExistsError) {
-    res.status(409).json({
+  if (error instanceof AppError) {
+    return res.status(error.statusCode).json({
       message: error.message,
     });
-
-    return;
   }
+
   return res.status(500).json({
     message: 'Internal server error',
   });

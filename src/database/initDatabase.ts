@@ -2,8 +2,10 @@ import 'dotenv/config';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { DataSource } from 'typeorm';
-import { createUserTypeOrmRepository } from './auth/auth.repository.ts';
-import { User } from './entities/user.entity.ts';
+import { createUserTypeOrmRepository } from '../auth/auth.repository.ts';
+import { User } from '../entities/user.entity.ts';
+import { Permission } from '../entities/permissions.entity.ts';
+import { Role } from '../entities/role.entity.ts';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -16,7 +18,7 @@ export const appDataSource = new DataSource({
   password: process.env.POSTGRES_PASSWORD,
   database: process.env.POSTGRES_DB,
 
-  entities: [__dirname + '/entities/**/*{.js,.ts}'],
+  entities: [User, Role, Permission],
   migrations: [__dirname + '/../sql/migrations/**/*{.js,.ts}'],
 
   logging: true,

@@ -9,7 +9,10 @@ export function validateBody(dtoClass: any) {
     res: Response,
     next: NextFunction,
   ): Promise<void> => {
-    const dtoInstance = plainToInstance(dtoClass, req.body);
+    const validBody =
+      req.body && Object.keys(req.body).length > 0 ? req.body : {};
+
+    const dtoInstance = plainToInstance(dtoClass, validBody);
 
     const errors: ValidationError[] = await validate(dtoInstance, {
       whitelist: true,

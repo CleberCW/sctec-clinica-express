@@ -1,6 +1,7 @@
-export class EmailAlreadyExistsError extends Error {
-  constructor() {
-    super('Email já existe no sistema');
-    this.name = 'EmailAlreadyExistsError';
+import { AppError } from './app.error.ts';
+
+export class EmailAlreadyExistsError extends AppError {
+  constructor(options?: ErrorOptions) {
+    super('Email já existe no sistema', 400, options);
   }
 }
