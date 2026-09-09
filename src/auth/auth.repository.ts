@@ -5,6 +5,7 @@ import { EmailAlreadyExistsError } from '../@common/errors/email-already-exists.
 
 export interface UserRepository {
   save(user: CreateUserRepositoryInput): Promise<User>;
+  getUserByEmail(email: string): Promise<User | null>;
 }
 
 export const createUserTypeOrmRepository = (
@@ -13,6 +14,21 @@ export const createUserTypeOrmRepository = (
   save: async (user) => {
     try {
       return await typeormRepo.save(user);
+    } catch (error) {
+      throw mapDatabaseError(error);
+    }
+  },
+
+  getUserByEmail: async (email) => {
+    try {
+      return await typeormRepo.findOne({
+        where: {
+          email: email,
+        },
+        relations: {
+          roles: true,
+        },
+      });
     } catch (error) {
       throw mapDatabaseError(error);
     }
@@ -27,17 +43,10 @@ const mapDatabaseError = (error: unknown): Error => {
   );
 
   if (error instanceof QueryFailedError) {
-    console.log('driverError:', error.driverError);
-    console.log('code:', error.driverError?.code);
-    console.log('constraint:', error.driverError?.constraint);
-
     if (error.driverError?.constraint === 'UQ_USER_EMAIL') {
-      console.log('MATCHED EMAIL CONSTRAINT');
       return new EmailAlreadyExistsError();
     }
   }
-
-  console.log('RETURNING ORIGINAL ERROR');
 
   return error instanceof Error ? error : new Error('Unknown database error');
 };

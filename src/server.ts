@@ -7,7 +7,7 @@ import express, {
 } from 'express';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { appDataSource } from './database.ts';
+import { appDataSource } from './database/initDatabase.ts';
 import { errorHandler } from './@common/error-handler.middleware.ts';
 import { createAuthModule } from './auth/auth.module.ts';
 
