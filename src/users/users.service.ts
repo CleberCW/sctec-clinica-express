@@ -1,12 +1,10 @@
 import type { UserRepository } from './users.repository.ts';
 import { RegisterUserDto } from './dtos/register-user-controller.dto.ts';
-import { compare, genSalt, hash } from 'bcrypt';
+import { compare, hash } from 'bcrypt';
 import type { RoleRepository } from './roles.repository.ts';
-import { AppError } from '../@common/errors/app.error.ts';
 import type { LoginDto } from './dtos/login.dto.ts';
 import { InvalidCredentialsError } from '../@common/errors/user-not-found.error.ts';
 import jwt from 'jsonwebtoken';
-import { UnauthorizedError } from '../@common/errors/unauthorized.error.ts';
 
 export const createUserService = (
   userRepository: UserRepository,
@@ -56,7 +54,6 @@ export const createUserService = (
         throw new InvalidCredentialsError();
       }
 
-      console.log(user.roles);
       const payload = {
         email: user.email,
         role: [...user.roles.map((role) => role.name)],
