@@ -37,7 +37,27 @@ A aplicação possui erros customizados para situações específicas. Esses err
 
 O projeto utiliza PostgreSQL com TypeORM. As alterações do banco são controladas através de migrations.
 
-Antes de utilizar a API, é necessário executar o bootstrap do banco:
+### PostgreSQL com Docker
+
+O PostgreSQL utilizado pela aplicação deve ser executado através do `docker-compose.yml` presente no projeto.
+
+Após configurar o arquivo `.env`, suba o banco com:
+
+```bash
+docker compose up -d
+```
+
+O container PostgreSQL deve estar em execução antes de executar as migrations ou utilizar a API.
+
+### Configuração inicial do banco
+
+Após subir o PostgreSQL, execute as migrations:
+
+```bash
+npm run migration:run
+```
+
+Depois execute o bootstrap do banco:
 
 ```bash
 npm run seed
@@ -50,7 +70,7 @@ INITIAL_ADMIN_EMAIL=admin@email.com
 INITIAL_ADMIN_PASSWORD=sua_senha
 ```
 
-Esse passo é necessário porque a criação de novos usuários é restrita ao usuário com role `admin`.
+O seed é necessário porque a criação de novos usuários é restrita ao usuário com role `admin`.
 
 ## Instalação
 
@@ -70,19 +90,18 @@ INITIAL_ADMIN_EMAIL=admin@email.com
 INITIAL_ADMIN_PASSWORD=sua_senha
 ```
 
-Execute as migrations:
+### Ordem de inicialização
+
+Para executar o projeto pela primeira vez, siga esta ordem:
 
 ```bash
+npm install
+docker compose up -d
 npm run migration:run
-```
-
-Depois execute o bootstrap:
-
-```bash
 npm run seed
 ```
 
-Para iniciar em desenvolvimento:
+Depois, inicie a API:
 
 ```bash
 npm run dev
